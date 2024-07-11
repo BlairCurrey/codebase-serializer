@@ -36,15 +36,15 @@ cd codebase-serializer
 ./main.sh /Users/me/code/myapp myapp-serialized.md
 ```
 
-# Why markdown?
+## Why markdown?
 
 It's structured enough for LLMs yet still readable for humans. The serialized markdown file is essentially a key (filepath) value (file content) pair but the file content in particular limits viable formats. Yaml or toml handle multiline strings fine but JSON does not. Ultimately, the output is meant to be passed into an LLM so the stricter structure of yaml or toml is not really necessary (like it might be if we were parsing the output ourselves).
 
-# Development
+## Development
 
 git clone this repo and run `./test/run-tests.sh` to run the tests.
 
-# TODO:
+## TODO:
 
 - [ ] handle more filetypes in the outputted md codeblocks
 - [ ] copy to clipboard
@@ -56,7 +56,7 @@ Some additional args to help control what's included:
 
 This would be useful but perhaps tedious to configure. To alleviate this we could add a `--config` option to avoid having to form the `--exclude` and `--include` lists in the command. Perhap we could also add an `--interactive` flag which would prompt the user to include/exclude files and optionally save the choices to a config file. The scope of common cases (always ignore `package-lock.json`, etc.) are probably too large to handle intelligiently and would require a lot of assumptions about what should be included.
 
-# Shoutout
+## Shoutout
 
 Shoutout to a similar project that I found when searching for this idea. Ultimately I wanted something in bash and which output to other formats than docx and txt but this is the same idea:
 
