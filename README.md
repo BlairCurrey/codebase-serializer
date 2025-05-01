@@ -36,6 +36,12 @@ cd codebase-serializer
 ./main.sh /Users/me/code/myapp myapp-serialized.md
 ```
 
+This creates a markdown file in the specified location as well as copying it to the clipboard. The input directory can always be some subpath in your project to control the scope of what's included.
+
+```bash
+./main.sh /Users/me/code/myapp/packages/my-api/src/services out.md
+```
+
 ## Why markdown?
 
 It's structured enough for LLMs yet still readable for humans. The serialized markdown file is essentially a key (filepath) value (file content) pair but the file content in particular limits viable formats. Yaml or toml handle multiline strings fine but JSON does not. Ultimately, the output is meant to be passed into an LLM so the stricter structure of yaml or toml is not really necessary (like it might be if we were parsing the output ourselves).
@@ -47,7 +53,7 @@ git clone this repo and run `./test/run-tests.sh` to run the tests.
 ## TODO:
 
 - [ ] handle more filetypes in the outputted md codeblocks
-- [ ] copy to clipboard
+- [x] copy to clipboard (only macos tested)
 
 Some additional args to help control what's included:
 

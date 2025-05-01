@@ -1,18 +1,45 @@
 #!/bin/bash
 
-printUsage() {
+print_usage() {
     echo "Usage: $(basename "$0") <directory> <output_file>"
-    echo "Example: $(basename "$0") /path/to/codebase codebase-output.md"
+    echo
+    echo "Arguments:"
+    echo "  <directory>     Root directory to serialize into markdown"
+    echo "  <output_file>   Path to the output markdown file"
+    echo
+    echo "Options:"
+    echo "  -h, --help      Show this help message and exit"
+    echo
+    echo "Example:"
+    echo "  $(basename "$0") ./my-codebase codebase.md"
 }
 
 parse_args() {
-    if [ $# -ne 2 ]; then
+    if [ "$#" -eq 1 ]; then
+        case "$1" in
+        -h | --help)
+            print_usage
+            exit 0
+            ;;
+        *)
+            echo "Error: Invalid argument '$1'"
+            print_usage
+            exit 1
+            ;;
+        esac
+    elif [ "$#" -ne 2 ]; then
         echo "Error: Invalid number of arguments."
+        print_usage
         exit 1
     fi
 
     directory="$1"
     output_file="$2"
+
+    if [ ! -d "$directory" ]; then
+        echo "Error: '$directory' is not a valid directory."
+        exit 1
+    fi
 }
 
 # Map file type for syntax highlighting in markdown code blocks
@@ -38,34 +65,35 @@ get_file_type() {
     esac
 }
 
-# copy_to_clipboard() {
-#   local text="$1"
+# Only macOS (pbcopy) has been tested. Linux (xclip) and Windows (clip.exe) are untested.
+copy_to_clipboard() {
+    local text="$1"
 
-#   # Try Linux (xclip)
-#   if command -v xclip >/dev/null; then
-#     echo "$text" | xclip -selection clipboard
-#     echo "Copied to clipboard (Linux)"
-#     return 0
-#   fi
+    # Try Linux (xclip)
+    if command -v xclip >/dev/null; then
+        echo "$text" | xclip -selection clipboard
+        echo "Copied to clipboard (Linux)"
+        return 0
+    fi
 
-#   # Try macOS (pbcopy)
-#   if command -v pbcopy >/dev/null; then
-#     echo "$text" | pbcopy
-#     echo "Copied to clipboard (macOS)"
-#     return 0
-#   fi
+    # Try macOS (pbcopy)
+    if command -v pbcopy >/dev/null; then
+        echo "$text" | pbcopy
+        echo "Copied to clipboard (macOS)"
+        return 0
+    fi
 
-#   # Try Windows (WSL, using clip.exe)
-#   if command -v clip.exe >/dev/null; then
-#     echo "$text" | clip.exe
-#     echo "Copied to clipboard (WSL)"
-#     return 0
-#   fi
+    # Try Windows (WSL, using clip.exe)
+    if command -v clip.exe >/dev/null; then
+        echo "$text" | clip.exe
+        echo "Copied to clipboard (WSL)"
+        return 0
+    fi
 
-#   # Fallback
-#   echo "Could not copy to clipboard"
-#   return 1
-# }
+    # Fallback
+    echo "Could not copy to clipboard"
+    return 1
+}
 
 serialize_codebase_markdown() {
     local directory="${1%/}" # strip trailing /
@@ -114,6 +142,13 @@ serialize_codebase_markdown() {
         echo "\`\`\`" >>"$output_file"
         echo >>"$output_file"
     done
+
+    # Optionally copy the output file to clipboars
+    if [ -s "$output_file" ]; then
+        copy_to_clipboard "$(cat "$output_file")"
+    else
+        echo "Warning: Output file is empty, nothing to copy."
+    fi
 }
 
 parse_args "$@"
