@@ -1,6 +1,6 @@
 # codebase-serializer
 
-Takes a directory as input and stores all file paths and their contents into a single markdown file. Observes the `.gitignore` file, if any.
+Takes a directory as input and stores all file paths and their contents into a single markdown file and copies to clipboard. Observes the `.gitignore` file, if any.
 
 Output is like:
 
@@ -54,6 +54,7 @@ git clone this repo and run `./test/run-tests.sh` to run the tests.
 
 - [ ] handle more filetypes in the outputted md codeblocks
 - [x] copy to clipboard (only macos tested)
+- [ ] make save to markdown/copy to clipboard configurable instead of always doing both. if not saving to markdown, should not take outfile as input
 
 Some additional args to help control what's included:
 
